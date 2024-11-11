@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz de Supervivencia y Adaptabilidad</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0B3861;
+            --accent-gold: #D4AF37;
+            --dark-blue: #072440;
+            --white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: var(--white);
+            line-height: 1.6;
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(11, 56, 97, 0.9);
+            min-height: 100vh;
+            border-left: 2px solid var(--accent-gold);
+            border-right: 2px solid var(--accent-gold);
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            font-size: 3.5em;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+            font-family: 'Impact', sans-serif;
+        }
+
+        .question-container {
+            background: var(--dark-blue);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-gold);
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .option {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-gold);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(10px);
+        }
+
+        .option.selected {
+            background: var(--accent-gold);
+            color: var(--dark-blue);
+        }
+
+        .btn {
+            background: var(--accent-gold);
+            color: var(--dark-blue);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #B4941F;
+            transform: translateY(-2px);
+        }
+
+        /* Nuevo diseño del certificado basado en la imagen de referencia */
+        .certificate {
+            background: white;
+            padding: 40px;
+            position: relative;
+            margin: 20px auto;
+            max-width: 800px;
+            color: var(--primary-blue);
+            display: none;
+        }
+
+        .certificate-header {
+            position: relative;
+            background-color: var(--primary-blue);
+            height: 150px;
+            margin: -40px -40px 20px -40px;
+            border-bottom: 20px solid var(--accent-gold);
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+        }
+
+        .certificate-footer {
+            position: relative;
+            background-color: var(--primary-blue);
+            height: 100px;
+            margin: 20px -40px -40px -40px;
+            border-top: 20px solid var(--accent-gold);
+            clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .certificate-title {
+            color: white;
+            font-size: 3em;
+            padding-top: 40px;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .certificate-content {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--primary-blue);
+        }
+
+        .certificate-content h2 {
+            color: var(--primary-blue);
+            font-size: 1.8em;
+            margin: 10px 0;
+        }
+
+        .certificate-content h3 {
+            font-size: 2em;
+            margin: 20px 0;
+            color: var(--primary-blue);
+        }
+
+        .certificate-content p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: var(--primary-blue);
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            padding: 0 50px;
+        }
+
+        .signature {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 200px;
+            border-top: 2px solid var(--primary-blue);
+            margin: 10px auto;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            background-image: url('/api/placeholder/100/100');
+            background-size: contain;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .certificate, .certificate * {
+                visibility: visible;
+            }
+            .certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="welcome-screen" class="animate__animated animate__fadeIn">
+            <h1>Quiz de Supervivencia</h1>
+            <div class="input-group">
+                <input type="text" id="fullName" placeholder="INGRESA TU NOMBRE, SUPERVIVIENTE" 
+                       style="width: 100%; padding: 15px; background: rgba(0,0,0,0.7); color: white; border: 2px solid var(--accent-gold);">
+            </div>
+            <button class="btn" onclick="startQuiz()">INICIAR MISIÓN</button>
+        </div>
+
+        <div id="quiz-container" style="display: none;">
+            <div class="question-container">
+                <h2 id="question"></h2>
+                <div id="options"></div>
+            </div>
+            <button class="btn" onclick="nextQuestion()">SIGUIENTE</button>
+        </div>
+
+        <div id="certificate-container" style="display: none;">
+            <div class="certificate">
+                <div class="certificate-header">
+                    <h1 class="certificate-title">Certificado</h1>
+                </div>
+                <div class="certificate-content">
+                    <h2>DE RECONOCIMIENTO A:</h2>
+                    <h3 id="cert-name"></h3>
+                    <p>Por haber concluido de manera satisfactoria</p>
+                    <h3>el curso de "Adaptabilidad e Innovación"</h3>
+                    <p>impartido por PsicoInnovaTe</p>
+                    <p>Con una calificación de: <span id="cert-score"></span></p>
+                    <p>Fecha: <span id="cert-date"></span></p>
+                    <div class="signature-area">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <p>Naydeth Prieto</p>
+                            <p>Propietaria</p>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <p>Brisa Meza</p>
+                            <p>Coo-propietaria</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="certificate-footer"></div>
+            </div>
+            <button class="btn" onclick="window.print()">IMPRIMIR CERTIFICADO</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+        {
+            question: "1. ¿Qué significa adaptabilidad laboral?",
+            options: [
+                "Resistencia al cambio",
+                "Capacidad de ajustarse a nuevas condiciones y desafíos",
+                "Permanecer en la misma rutina",
+                "Evitar aprender cosas nuevas"
+            ],
+            correct: 1
+        },
+        {
+            question: "2. ¿Cuál de las siguientes es una habilidad clave para la innovación?",
+            options: [
+                "Pensamiento crítico",
+                "Resistencia al cambio",
+                "Miedo a los riesgos",
+                "Evitar nuevas ideas"
+            ],
+            correct: 0
+        },
+        {
+            question: "3. ¿Qué fomenta la adaptabilidad en los equipos?",
+            options: [
+                "Estructuras rígidas de trabajo",
+                "Comunicación abierta y flexibilidad",
+                "Evitar la retroalimentación",
+                "Promover la monotonía"
+            ],
+            correct: 1
+        },
+        {
+            question: "4. ¿Qué es la innovación en el entorno laboral?",
+            options: [
+                "La resistencia al cambio organizacional",
+                "La implementación de ideas nuevas para mejorar procesos o productos",
+                "Seguir métodos obsoletos",
+                "Evitar la creatividad en el trabajo"
+            ],
+            correct: 1
+        },
+        {
+            question: "5. ¿Qué práctica ayuda a fortalecer la innovación?",
+            options: [
+                "Castigar los errores",
+                "Fomentar el aprendizaje continuo",
+                "Prohibir la experimentación",
+                "Mantener un entorno rígido"
+            ],
+            correct: 1
+        },
+        {
+            question: "6. ¿Qué actitud es esencial para la adaptabilidad?",
+            options: [
+                "Rigidez ante los cambios",
+                "Apertura y disposición al aprendizaje",
+                "Miedo a probar cosas nuevas",
+                "Evitar el trabajo en equipo"
+            ],
+            correct: 1
+        },
+        {
+            question: "7. ¿Qué herramienta ayuda a gestionar cambios en el entorno laboral?",
+            options: [
+                "Análisis DAFO",
+                "Negación de los problemas",
+                "Rechazo a las nuevas ideas",
+                "Mantener procesos antiguos"
+            ],
+            correct: 0
+        },
+        {
+            question: "8. ¿Qué promueve una cultura de innovación?",
+            options: [
+                "Penalizar las nuevas ideas",
+                "Reconocer y apoyar las iniciativas creativas",
+                "Restringir la comunicación entre equipos",
+                "Desalentar la experimentación"
+            ],
+            correct: 1
+        },
+        {
+            question: "9. ¿Cuál es una barrera para la adaptabilidad?",
+            options: [
+                "Resistencia al cambio",
+                "Trabajo colaborativo",
+                "Comunicación abierta",
+                "Flexibilidad en procesos"
+            ],
+            correct: 0
+        },
+        {
+            question: "10. ¿Qué enfoque ayuda a mejorar la innovación en equipos?",
+            options: [
+                "Desalentar las ideas",
+                "Promover la diversidad de pensamiento",
+                "Mantener métodos estrictos y fijos",
+                "Ignorar el aprendizaje colaborativo"
+            ],
+            correct: 1
+        },
+        {
+            question: "11. ¿Qué significa la innovación incremental?",
+            options: [
+                "Cambios radicales y rápidos",
+                "Introducción de mejoras pequeñas pero continuas",
+                "Mantener el mismo modelo sin cambios",
+                "Evitar la mejora de procesos"
+            ],
+            correct: 1
+        },
+        {
+            question: "12. ¿Cómo contribuye la adaptabilidad a la productividad?",
+            options: [
+                "Reduciendo la flexibilidad del equipo",
+                "Mejorando la capacidad para responder a cambios y desafíos",
+                "Manteniendo la misma estrategia de trabajo a largo plazo",
+                "Evitando la innovación"
+            ],
+            correct: 1
+        },
+        {
+            question: "13. ¿Qué tipo de liderazgo es clave para fomentar la innovación?",
+            options: [
+                "Autoritario",
+                "Transformacional",
+                "Laissez-faire",
+                "Conservador"
+            ],
+            correct: 1
+        },
+        {
+            question: "14. ¿Qué estrategia ayuda a mejorar la adaptabilidad dentro de una organización?",
+            options: [
+                "Resistencia al cambio",
+                "Formación continua y aprendizaje organizacional",
+                "Evitar nuevos proyectos",
+                "Mantener una estructura rígida"
+            ],
+            correct: 1
+        },
+        {
+            question: "15. ¿Qué papel juega la tecnología en la innovación laboral?",
+            options: [
+                "No tiene impacto",
+                "Facilita la automatización y el desarrollo de nuevas ideas",
+                "Solo se usa para tareas repetitivas",
+                "Restringe la creatividad"
+            ],
+            correct: 1
+        },
+        {
+            question: "16. ¿Cuál de las siguientes características describe a una organización innovadora?",
+            options: [
+                "Resistencia a las nuevas ideas",
+                "Capacidad de adaptarse rápidamente a los cambios del mercado",
+                "Evitar el riesgo",
+                "Solo se enfoca en la estabilidad a largo plazo"
+            ],
+            correct: 1
+        },
+        {
+            question: "17. ¿Por qué es importante fomentar la adaptabilidad en los colaboradores?",
+            options: [
+                "Para mantener una estructura rígida",
+                "Para enfrentar mejor los cambios y desafíos del entorno laboral",
+                "Para evitar la innovación",
+                "Para que los colaboradores sigan siempre los mismos procesos"
+            ],
+            correct: 1
+        },
+        {
+            question: "18. ¿Cuál es un resultado clave de la innovación dentro de una empresa?",
+            options: [
+                "Estancamiento en los procesos",
+                "Mejora de la competitividad y la eficiencia",
+                "Reducción de la moral de los empleados",
+                "Aumento de los costos sin beneficios"
+            ],
+            correct: 1
+        },
+        {
+            question: "19. ¿Qué papel juegan los colaboradores en la innovación organizacional?",
+            options: [
+                "No juegan ningún papel, ya que solo los directivos toman decisiones",
+                "Son clave para aportar ideas y mejorar procesos",
+                "Solo deben seguir instrucciones sin proponer nuevas ideas",
+                "Deben evitar involucrarse en el proceso de innovación"
+            ],
+            correct: 1
+        },
+        {
+            question: "20. ¿Cómo influye la cultura organizacional en la innovación?",
+            options: [
+                "Limita la creatividad al seguir estrictos procesos",
+                "La cultura abierta y flexible fomenta la creatividad y las nuevas ideas",
+                "La cultura organizacional no influye en la innovación",
+                "La cultura rígida asegura una mayor innovación"
+            ],
+            correct: 1
+        }
+    ];
+    
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            const name = document.getElementById('fullName').value.trim();
+            if (!name) {
+                alert('¡Necesitamos tu nombre para registrar tu supervivencia!');
+                return;
+            }
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = question.question;
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option animate__animated animate__fadeInRight';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => option.classList.remove('selected'));
+            options[index].classList.add('selected');
+            userAnswers[currentQuestion] = index;
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestion] === undefined) {
+                alert('¡Selecciona una respuesta para sobrevivir!');
+                return;
+            }
+
+            if (userAnswers[currentQuestion] === questions[currentQuestion].correct) {
+                score++;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('certificate-container').style.display = 'block';
+            
+            const percentage = (score / questions.length) * 100;
+            document.getElementById('cert-name').textContent = document.getElementById('fullName').value;
+            document.getElementById('cert-score').textContent = `${percentage.toFixed(1)}%`;
+            document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+            document.querySelector('.certificate').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
